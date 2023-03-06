@@ -1,0 +1,11 @@
+apiVersion: demo.aztek.no/v1
+kind: Application
+metadata:
+  name: myapp
+spec:
+  replicas: 3
+  image: mccutchen/go-httpbin:latest
+  hostname: myapp.127.0.0.1.sslip.io
+  env:
+  - name: ANOTHER
+    value: value

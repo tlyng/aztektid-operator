@@ -1,0 +1,117 @@
+Hvordan utvide Kubernetes for å redusere kompleksiteten for sluttbruker?
+En introduksjon til Kubernetes Operators
+
+Torkel Lyng
+Konsulent, Trondheim
+tly@aztek.no
+
+* Introduksjon
+
+- Kubernetes er vanskelig for sluttbrukere
+- Hvordan Kubernetes Operators kan være en del av løsningen som reduserer utfordringene som sluttbrukere opplever.
+
+* Kubernetes er vanskelig for sluttbrukere
+
+: Påstand: Kubernetes er vanskelig for sluttbrukere
+:
+: Flere grunner til at det oppleves som vanskelig for sluttbrukere, vi skal gå gjennom noen av dem her.
+
+* Abstraksjon
+
+: Kubernetes abstraherer bort den underliggende infrastrukturen og  faktiske ressurser, som compute, lagring og nettverk. Denne abstrasjonen kan være vanskelig å forstå for sluttbrukere som ikke er kjent med den underliggende infrastrukturen.
+:
+: Terminologi som AWS, Azure, GCP, virtuelle maskiner, harddisker o.l erstattes gjerne med
+: Pods, Replicas, Deployments, Statefulsets, Persistent Volumes, Services, Ingress, Egress med mer.
+
+
+* Terminologi
+
+: Kubernetes har mye spesifik terminologi, slik som pods, services, deployments, replicasets. Det å benytte og forstå denne terminologien kan være vanskelig for nye brukere, vanskelig for erfarne brukere også.
+:
+: - Hva er en Pod? Hvordan kan den konfigureres?
+: - Hva er en Deployments? Hvordan skiller den seg fra Statefulsets?
+: - Hva er en Service? Hvorfor rulles ingenting ut ved opprettelse av nye Services?
+: - Osv, listen er lang!
+
+* Konfigurasjon
+
+: Kubernetes trenger mye konfigurasjon, inkludert YAML filer for å definere objekter og ressurser. Dette kan være overveldene for sluttbrukere som ikke nødvendigvis er erfaren med YAML og vedlikehold av konfigurasjoner.
+:
+: Kubernetes: Pods, Deployments, Services, Service Accounts, StatefulSets, DaemonSets
+: Istio: Gateways, VirtualService, Routes, DestinationRules, Ingress, Egress
+: Calico: NetworkPolicy, BGP med mer
+: Cert-Manager: ClusterIssuer, Issuer, Certificates, CertificateRequests med mer.
+: PureLB: ServiceGroup, IPv4 Pool, IPv6 Pool, LBNodeAgent
+: Man kan fort komme opp i flere titalls forskjellige YAML spesifikasjoner, hvor samtlige spesifikasjoner krever domenekunnskap i varierende grad.
+
+* Features, features, features
+
+: Kubernetes har et enormt utvalg av funksjonaliteter, som f.eks last balansering, rolling updates, auto skalering, sikkerhet osv. Disse funksjonene krever gjerne dyp forståelse av systemet og kan derfor være vanskelig å implementere for sluttbrukere.
+
+
+* Mangel av brukervennlige grensesnitt
+
+: Selv om det eksisterer grafiske- og kommandolinjegrensesnitt for Kubernetes, er de fremdeles kompliserte og de krever en del læring for å bli effektivt utnyttet.
+
+
+
+* Kubernetes Operators
+
+- Hva er en Kubernetes Operator?
+- Fordeler med å bruke operators for å administrere komplekse applikasjoner i Kubernetes
+
+* Hva er en Kubernetes Operator?
+
+- En Kubernetes Operator er et "software pattern" som hjelper utrulling og vedlikehold av kompliserte applikasjoner i Kubernetes.
+- Utvider Kubernetes med domenespesifikke kunnskaper og forretningslogikk for vedlikehold av applikasjoner og tjenester.
+- Sluttbruker spesifiserer ønsket tilstand av applikasjon, operator overvåker faktisk tilstand for så å prøve å forsone forskjellene.
+
+: For eksempel: En database applikasjon krever spesifikke oppgaver som f.eks backup, skalering og failover. En Kubernetes Operator som vet hvordan disse oppgavene utføres, vil sørge for at databasen kjører korrekt.
+: Operators gjør det enklere å vedlikeholde kompliserte applikasjoner i Kubernetes, ved å automatisere repetive oppgaver.
+: En operator vil tilby et høyere abstraksjonsnivå, som igjen reduserer behovet for forståelse av mye terminologi.
+
+* Hvordan Kubernetes Operators kan redusere kompleksiteten for sluttbrukere
+
+- Forenklet terminologi
+- Automatisering
+- Inneholder domenespesifikk kunnskaper
+- Konsistens
+
+: Forenklet terminologi: Operators abstraherer bort mye av kompleksiteten av vedlikehold av applikasjoner, ved å tilby et deklarativt grensesnitt som definerer ønsket tilstand for applikasjonen. Operatoren er da ansvarlig for hvordan den oppnår ønsket tilstand, som inkluderer opprettelse, oppdatering og sletting av Kubernetes ressurser.
+: Automatisering: Operators automatiserer repetative oppgaver, slik som skalering, backups og failover. Dette reduserer arbeidsmengden som kreves av sluttbrukere for å sørge for at applikasjonen er operativ.
+: Domenespesifikk kunnskap: Operators tilbyr domenespesifikk kunnskap og forretningslogikk. Dette reduserer kunnskapsbehovet for sluttbrukere for å drifte den spesifikke applikasjonen og/eller tjenesten.
+: Konsistens: Operators sørger for at det er konsistens i hvordan applikasjoner blir vedlikeholdt, som igjen reduserer risikoen for feil og nedetid. Ved å bruke en deklarativ tilnærming til å administrere appliasjonen, kan operators sikre at applikasjonen alltid er i ønsket tilstand, uavhengig av hvordan den kom dit.
+
+* Verktøy for utvikling og vedlikehold av Kubernetes Operators
+
+- [[https://kubebuilder.io][Kubebuilder]] (https://kubebuilder.io)
+- [[https://sdk.operatorframework.io/][Operator-SDK]] (https://sdk.operatorframework.io)
+- [[https://github.com/kubernetes-sigs/controller-runtime][controller-runtime]] (https://github.com/kubernetes-sigs/controller-runtime)
+- [[https://github.com/kubernetes/client-go][client-go]] (https://github.com/kubernetes/client-go)
+
+: kubebuilder: skaffolding for utvikling av kubernetes operatorer, bygger på controller-runtime.
+: operator-sdk: tilsvarende løsning fra RedHat, ypperlig valg for OpenShift baserte miljøer.
+: controller-runtime: golang rammeverk for utvikling av kubernetes controllers / operators
+: client-go: primitiv klient for å kommunisere med kubernetes, "old-fashioned" operators.
+
+* Oppsummering
+
+Fordeler ved bruk av operators for å redusere kompleksiteten:
+
+Mindre: 
+
+- hodebry
+- terminologi
+- konfigurasjon og vedlikehold
+- nedetid
+- domenespesifikke kunnskaper
+
+Mer:
+
+- konsistens
+- oppetid
+
+
+* Demo (hic sunt dracones)
+
+: There may be dragons!
