@@ -110,8 +110,116 @@ Mer:
 
 - konsistens
 - oppetid
-
+- produktivitet (mer tid på forretningslogikk/funksjonalitet fremfor utrulling/konfigurasjon)
 
 * Demo (hic sunt dracones)
 
+Vi skal rulle ut en enkel applikasjon og har i den forbindelse laget en aztektid operator som skal forenkle prosessen for sluttbruker.
+
 : There may be dragons!
+
+* Vanilla Kubernetes
+
+For å få en applikasjon tilgjengelig på nett, trenger vi følgende kubernetes ressurser:
+
+- Deployment
+- Service
+- Ingress
+
+* Vanilla Kubernetes
+
+Deployment:
+
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+        name: myapp
+        namespace: myspace
+    spec:
+        replicas: ..
+        selector:
+            ...
+        template:
+            spec:
+                containers:
+                    - image: ...
+                      env:
+                        ...
+                      ports:
+                        ...
+
+Deployment spec blir fort 50-70 linjer YAML, domenespesifikk.
+
+* Vanilla Kubernetes
+
+Service:
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+        name: myapp
+        namespace: myspace
+    spec:
+        selector:
+            ...
+        ports:
+            ...
+        ipFamilyPolicy:
+            ...
+
+Service spec blir fort 15-25 linjer YAML, domenespesifikk.
+
+* Vanilla Kubernetes
+
+Ingress:
+
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+        name: myapp
+        namespace: myspace
+    spec:
+        rules:
+        - host: myhostname.com
+          http:
+            paths: 
+            - backend:
+                service:
+                  name: myapp
+                  port:
+                    number: 8080
+              path: /
+              pathType: ImplementationSpecific
+
+Ingress spec blir 15-20 linjer YAML, domenespesifikk.
+
+* aztektid-operator
+
+Vår demo operator introduserer en ny ressurs, Application, som krever mindre domenekunnskap enn vanilla k8s.
+
+    apiVersion: demo.aztek.no/v1
+    kind: Application
+    metadata:
+        name: myapp
+        namespace: mynamespace
+    spec:
+        replicas: 3
+        image: myimage:tag
+        hostname: myapp.myorganization.no
+        env:
+        - name: LISTEN_ADDRESS
+          value: "[::]"
+        - name: PORT
+          value: 8080
+
+Operatoren vil sørge for at Application spec (desired state) alltid er reflektert i den faktiske tilstanden (Deployment, Service, Ingress)
+
+: Ting å demonstrere
+: - opprettelse av k8s cluster
+: - installasjon av ingress og operator
+: - vise app.yaml
+: - kubectl get applications
+: - kubectl get deployments,svc,ingress
+: - kubectl get pods
+: - rediger deployment og ingress direkte, for å se at desired state blir forsonet.
+: - rediger application for å se at endringene propagerer ut til desired state / deployment,svc,ingress
