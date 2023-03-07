@@ -64,11 +64,16 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 
 	var application demov1.Application
 	if err := r.Get(ctx, req.NamespacedName, &application); err != nil {
-		logger.Error(err, "unable to fetch Application")
+		// logger.Error(err, "unable to fetch Application")
 		// we'll ignore not-found errors, since they can't be fixed by an immediate
 		// requeue (we'll need to wait for a new notification), and we can get them
 		// on deleted requests.
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// Check if Application is under deletion
+	if !application.DeletionTimestamp.IsZero() {
+		return ctrl.Result{}, nil
 	}
 
 	deployment := &appsv1.Deployment{
