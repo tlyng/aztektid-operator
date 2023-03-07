@@ -15,7 +15,17 @@ spec:
     singular: application
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.replicas
+      name: Replicas
+      type: integer
+    - jsonPath: .spec.image
+      name: Image
+      type: string
+    - jsonPath: .spec.hostname
+      name: Hostname
+      type: string
+    name: v1
     schema:
       openAPIV3Schema:
         description: Application is the Schema for the applications API
@@ -163,4 +173,8 @@ spec:
     served: true
     storage: true
     subresources:
+      scale:
+        labelSelectorPath: .status.labelSelector
+        specReplicasPath: .spec.replicas
+        statusReplicasPath: .status.replicas
       status: {}

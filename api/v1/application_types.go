@@ -48,9 +48,12 @@ type ApplicationStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector
+// +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas"
+// +kubebuilder:printcolumn:name="Image",type="string",JSONPath=".spec.image"
+// +kubebuilder:printcolumn:name="Hostname",type="string",JSONPath=".spec.hostname"
 // Application is the Schema for the applications API
 type Application struct {
 	metav1.TypeMeta   `json:",inline"`
